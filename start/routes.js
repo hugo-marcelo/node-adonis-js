@@ -33,7 +33,20 @@ Route.group(() => {
         ]
       ]
     ))
+})
+.except(['index', 'show'])
+.middleware(['auth', 'is:(administrator || moderator)'])
 
-  Route.resource('permissions', 'PermissionController')
-    .apiOnly()
-}).middleware(['auth'])
+Route.get('projects', 'ProjectController.index')
+  .middleware(['auth', 'can:read_projects'])
+
+Route.get('projects/:id', 'ProjectController.show')
+  .middleware(['auth', 'can:read_projects'])
+
+Route.resource('permissions', 'PermissionController')
+  .apiOnly()
+  .middleware('auth')
+
+Route.resource('roles', 'RoleController')
+  .apiOnly()
+  .middleware('auth')
